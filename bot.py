@@ -14,7 +14,21 @@ SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1d4kA7Gh22BcvffhQjx53X
 
 # --- Google Sheets API ---
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+import os
+import json
+from oauth2client.service_account import ServiceAccountCredentials
+
+# отримати JSON із змінної середовища
+creds_json = os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"].replace('\\n', '\n')
+
+# тимчасово записати у файл
+with open("creds.json", "w") as f:
+    f.write(creds_json)
+
+# використовуємо тимчасовий файл
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+
 client = gspread.authorize(creds)
 sheet = client.open_by_url(SPREADSHEET_URL).worksheet(SHEET_NAME)
 
